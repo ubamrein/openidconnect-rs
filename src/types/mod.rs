@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use url::Url;
 
-use std::fmt::Debug;
+use std::fmt::{Debug};
 use std::hash::Hash;
 use std::ops::Deref;
 

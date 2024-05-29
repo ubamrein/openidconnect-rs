@@ -276,7 +276,7 @@ where
     /// Fetches the OpenID Connect Discovery document and associated JSON Web Key Set from the
     /// OpenID Connect Provider.
     pub fn discover<C>(
-        issuer_url: &dyn IssuerFetchable,
+        issuer_url: &impl IssuerFetchable,
         http_client: &C,
     ) -> Result<Self, DiscoveryError<<C as SyncHttpClient>::Error>>
     where
@@ -350,7 +350,7 @@ where
     }
 
     fn discovery_response<RE>(
-        issuer_url: &dyn IssuerFetchable,
+        issuer_url: &impl IssuerFetchable,
         discovery_url: &url::Url,
         discovery_response: HttpResponse,
     ) -> Result<Self, DiscoveryError<RE>>
@@ -382,7 +382,7 @@ where
         )
         .map_err(DiscoveryError::Parse)?;
 
-        if issuer_url.verify(&provider_metadata.issuer()) {
+        if !issuer_url.verify(&provider_metadata.issuer()) {
             Err(DiscoveryError::Validation(format!(
                 "unexpected issuer URI `{}` (expected `{}`)",
                 provider_metadata.issuer().as_str(),

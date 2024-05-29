@@ -728,7 +728,7 @@ pub use crate::types::{
     LoginHint, LogoUrl, LogoutHint, Nonce, OpPolicyUrl, OpTosUrl, PolicyUrl, PostLogoutRedirectUrl,
     RegistrationAccessToken, RegistrationUrl, RequestUrl, ResponseMode, ResponseType,
     ResponseTypes, SectorIdentifierUrl, ServiceDocUrl, SigningError, StreetAddress,
-    SubjectIdentifier, SubjectIdentifierType, ToSUrl,
+    SubjectIdentifier, SubjectIdentifierType, ToSUrl, IssuerFetchable
 };
 pub use crate::user_info::{
     UserInfoClaims, UserInfoError, UserInfoJsonWebToken, UserInfoRequest, UserInfoResponseType,
