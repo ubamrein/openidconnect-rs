@@ -294,7 +294,24 @@ new_url_type![
     /// Party.
     InitiateLoginUrl
 ];
+pub trait IssuerFetchable {
+    fn verify(&self, url: &IssuerUrl) -> bool;
+    fn issuer(&self) -> &IssuerUrl;
+    fn _as_str(&self) -> &str;
+}
 
+impl IssuerFetchable for IssuerUrl {
+    fn verify(&self, url: &IssuerUrl) -> bool {
+        self == url
+    }
+    fn issuer(&self) -> &IssuerUrl {
+        self
+    }
+
+    fn _as_str(&self) -> &str {
+        self.as_str()
+    }
+}
 new_url_type![
     /// URL using the `https` scheme with no query or fragment component that the OP asserts as its
     /// Issuer Identifier.

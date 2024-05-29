@@ -1,4 +1,5 @@
 use crate::http_utils::{check_content_type, MIME_TYPE_JSON};
+use crate::types::IssuerFetchable;
 use crate::{
     AsyncHttpClient, AuthDisplay, AuthUrl, AuthenticationContextClass, ClaimName, ClaimType,
     ClientAuthMethod, GrantType, HttpRequest, HttpResponse, IssuerUrl, JsonWebKey, JsonWebKeySet,
@@ -275,13 +276,14 @@ where
     /// Fetches the OpenID Connect Discovery document and associated JSON Web Key Set from the
     /// OpenID Connect Provider.
     pub fn discover<C>(
-        issuer_url: &IssuerUrl,
+        issuer_url: &dyn IssuerFetchable,
         http_client: &C,
     ) -> Result<Self, DiscoveryError<<C as SyncHttpClient>::Error>>
     where
         C: SyncHttpClient,
     {
         let discovery_url = issuer_url
+            .issuer()
             .join(CONFIG_URL_SUFFIX)
             .map_err(DiscoveryError::UrlParse)?;
 
@@ -348,7 +350,7 @@ where
     }
 
     fn discovery_response<RE>(
-        issuer_url: &IssuerUrl,
+        issuer_url: &dyn IssuerFetchable,
         discovery_url: &url::Url,
         discovery_response: HttpResponse,
     ) -> Result<Self, DiscoveryError<RE>>
@@ -380,11 +382,11 @@ where
         )
         .map_err(DiscoveryError::Parse)?;
 
-        if provider_metadata.issuer() != issuer_url {
+        if issuer_url.verify(&provider_metadata.issuer()) {
             Err(DiscoveryError::Validation(format!(
                 "unexpected issuer URI `{}` (expected `{}`)",
                 provider_metadata.issuer().as_str(),
-                issuer_url.as_str()
+                issuer_url._as_str()
             )))
         } else {
             Ok(provider_metadata)
